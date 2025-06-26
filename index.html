@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>DocuCloud</title>
+
+  <!-- Bootstrap RTL -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f9fafb;
+    }
+
+    h1 {
+      color: #0d6efd;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    mark {
+      background-color: yellow;
+      font-weight: bold;
+    }
+
+    .snippet {
+      background: #f5f5f5;
+      border-right: 4px solid #0d6efd;
+      margin-top: 10px;
+      padding: 10px;
+      direction: rtl;
+    }
+
+    .snippet strong {
+      display: block;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+    }
+
+    .snippet em {
+      color: #666;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .snippet ul {
+      padding-inline-start: 20px;
+      margin: 0;
+    }
+
+    .snippet li {
+      margin-bottom: 6px;
+      line-height: 1.3em;
+    }
+
+    /* رأس الجدول أزرق فاتح */
+    .table-light th {
+      background-color: #cfe2ff !important;
+      color: #084298 !important;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    .ext-pdf {
+      background-color: rgba(220, 53, 69, 0.9) !important;
+      color: #fff !important;
+      font-weight: bold;
+      border-radius: 12px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 8px 0;
+    }
+
+    .ext-docx {
+      background-color: rgba(13, 110, 253, 0.9) !important;
+      color: #fff !important;
+      font-weight: bold;
+      border-radius: 12px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 8px 0;
+    }
+
+    table td {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-5">
+    <h1><i class="bi bi-cloud-arrow-up-fill text-primary"></i> نظام إدارة وتحليل الملفات <i class="bi bi-cloud-arrow-up-fill text-primary"></i></h1>
+
+    <!-- رفع الملفات -->
+    <div class="mb-4">
+      <input type="file" id="fileInput" multiple accept=".pdf,.docx" class="form-control mb-2" />
+      <button onclick="uploadFiles()" class="btn btn-primary">
+        <i class="bi bi-upload"></i> رفع الملفات
+      </button>
+    </div>
+
+    <!-- البحث -->
+    <div class="mb-4">
+      <label class="form-label">ابحث عن كلمة:</label>
+      <div class="d-flex gap-2">
+        <input type="text" id="keywordInput" class="form-control" />
+        <button onclick="search()" class="btn btn-success">
+          <i class="bi bi-search"></i> بحث
+        </button>
+        <button onclick="clearSearch()" class="btn btn-outline-secondary">
+          <i class="bi bi-x-circle"></i> إزالة البحث
+        </button>
+      </div>
+    </div>
+
+    <div id="searchResults" class="mb-4"></div>
+    <div id="fileTableContainer"></div>
+  </div>
+
+  <script>
+    function sortFilesByTitle(files) {
+      return files.slice().sort((a, b) => a.title.localeCompare(b.title, 'ar'));
+    }
+
+    function cropTitle(title) {
+      return title.trim().substring(0, 25);
+    }
+
+    async function fetchFilesAndDisplayTable() {
+      try {
+        const res = await fetch('http://localhost:3000/files.json');
+        const files = await res.json();
+
+        if (!files.length) {
+          document.getElementById('fileTableContainer').innerHTML = "لا توجد ملفات حالياً.";
+          return;
+        }
+
+        const sortedFiles = sortFilesByTitle(files);
+
+        let rows = sortedFiles.map((file, i) => {
+          const extClass = file.ext === 'pdf' ? 'ext-pdf' :
+                           file.ext === 'docx' ? 'ext-docx' : '';
+
+          return `
+            <tr>
+              <td>${i + 1}</td>
+              <td title="${file.title}">${cropTitle(file.title)}</td>
+              <td>${file.classification}</td>
+              <td>${file.filename}</td>
+              <td class="${extClass}">${file.ext}</td>
+              <td>${(file.size / 1024).toFixed(2)} KB</td>
+            </tr>
+          `;
+        }).join('');
+
+        const tableHTML = `
+          <h3 class="mt-4 mb-3">
+            <i class="bi bi-folder2-open text-primary"></i> الملفات المخزنة:
+          </h3>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>العنوان</th>
+                  <th>التصنيف</th>
+                  <th>الاسم</th>
+                  <th>الامتداد</th>
+                  <th>الحجم</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+
+        let classificationCounts = {};
+        files.forEach(f => {
+          classificationCounts[f.classification] = (classificationCounts[f.classification] || 0) + 1;
+        });
+
+      const mostCommon = Object.entries(classificationCounts)
+        .sort((a, b) => b[1] - a[1])[0];
+
+      const statsText = `تم تحميل ${files.length} ملفًا، وأشهر تصنيف هو: ${mostCommon[0]}`;
+
+      document.getElementById('fileTableContainer').innerHTML = tableHTML + `
+        <p style="font-size: 16px; font-weight: 600; margin-top: 10px; color: #444;"><i class="bi bi-bar-chart-line"></i>
+
+
+
+
+  ${statsText}</p>`;
+
+
+      } catch (err) {
+        console.error("فشل في تحميل الملفات:", err);
+        document.getElementById('fileTableContainer').innerText = "فشل في تحميل الملفات.";
+      }
+    }
+
+    async function uploadFiles() {
+      const input = document.getElementById('fileInput');
+      const files = input.files;
+      if (!files.length) {
+        alert("اختر الملفات أولاً.");
+        return;
+      }
+
+      const formData = new FormData();
+      for (const file of files) formData.append("files", file);
+
+      try {
+        const res = await fetch('http://localhost:3000/upload', {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        alert(`<i class="bi bi-check-circle-fill text-success"></i> تم رفع ${data.uploaded} وتخطي ${data.skipped.length} ملفات مكررة.`);
+        fetchFilesAndDisplayTable();
+
+      } catch (err) {
+        alert(`<i class="bi bi-x-circle-fill text-danger"></i> فشل في رفع الملفات.`);
+      } finally {
+        input.value = "";
+      }
+    }
+
+    async function search() {
+      const keyword = document.getElementById('keywordInput').value.trim();
+      if (!keyword) return alert("أدخل كلمة للبحث.");
+
+      try {
+        const res = await fetch(`http://localhost:3000/search?keyword=${encodeURIComponent(keyword)}`);
+        const results = await res.json();
+
+        if (!results.length) {
+          document.getElementById('searchResults').innerHTML = "لم يتم العثور على نتائج.";
+          return;
+        }
+
+        const regex = new RegExp(`(${keyword})`, 'gi');
+
+        const html = results.map(r => `
+          <div class="snippet">
+            <strong><i class="bi bi-file-earmark-text"></i> ${r.filename}</strong>
+            <em>${r.count} تكرار${r.count > 1 ? 'ات' : ''}</em>
+            <ul>
+              ${r.snippets.map(line => `<li>${line.replace(regex, `<mark>$1</mark>`)}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('');
+
+        document.getElementById('searchResults').innerHTML = html;
+
+      } catch (err) {
+        console.error("فشل البحث:", err);
+        alert("<i class='bi bi-x-circle-fill text-danger'></i> فشل في تنفيذ البحث.");
+      }
+    }
+
+    function clearSearch() {
+      document.getElementById('keywordInput').value = "";
+      document.getElementById('searchResults').innerHTML = "";
+    }
+
+    window.onload = fetchFilesAndDisplayTable;
+  </script>
+</body>
+</html>
