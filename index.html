@@ -131,7 +131,7 @@
 
     async function fetchFilesAndDisplayTable() {
       try {
-        const res = await fetch('http://localhost:3000/files.json');
+        const res = await fetch('https://cloud-project-hc8v.onrender.com/files.json');
         const files = await res.json();
 
         if (!files.length) {
@@ -215,7 +215,7 @@
       for (const file of files) formData.append("files", file);
 
       try {
-        const res = await fetch('http://localhost:3000/upload', {
+        const res = await fetch('https://cloud-project-hc8v.onrender.com/upload', {
           method: "POST",
           body: formData
         });
@@ -236,7 +236,7 @@
       if (!keyword) return alert("أدخل كلمة للبحث.");
 
       try {
-        const res = await fetch(`http://localhost:3000/search?keyword=${encodeURIComponent(keyword)}`);
+        const res = await fetch(`https://cloud-project-hc8v.onrender.com/search?keyword=${encodeURIComponent(keyword)}`);
         const results = await res.json();
 
         if (!results.length) {
