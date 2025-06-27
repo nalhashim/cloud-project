@@ -228,11 +228,11 @@
         });
 
         const data = await res.json();
-        alert(`<i class="bi bi-check-circle-fill text-success"></i> تم رفع ${data.uploaded} وتخطي ${data.skipped.length} ملفات مكررة.`);
+        alert(`<i class="bi bi-check-circle-fill text-success"> تم رفع ${data.uploaded} وتخطي ${data.skipped.length} ملفات مكررة.</i>`);
         fetchFilesAndDisplayTable();
 
       } catch (err) {
-        alert(`<i class="bi bi-x-circle-fill text-danger"></i> فشل في رفع الملفات.`);
+        alert(`<i class="bi bi-x-circle-fill text-danger"> فشل في رفع الملفات.</i>`);
       } finally {
         input.value = "";
       }
@@ -267,7 +267,7 @@
 
       } catch (err) {
         console.error("فشل البحث:", err);
-        alert("<i class='bi bi-x-circle-fill text-danger'></i> فشل في تنفيذ البحث.");
+        alert("<i class='bi bi-x-circle-fill text-danger'> فشل في تنفيذ البحث.</i>");
       }
     }
 
