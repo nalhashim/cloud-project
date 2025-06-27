@@ -131,7 +131,7 @@
 
     async function fetchFilesAndDisplayTable() {
       try {
-        const res = await fetch('https://cloud-project-hc8v.onrender.com/files.json');
+        const res = await fetch('https://iugazacloudcomputing.s3.eu-north-1.amazonaws.com/files.json');
         const files = await res.json();
 
         if (!files.length) {
