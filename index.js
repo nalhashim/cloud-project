@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 // A simple home route
 app.get('/', (req, res) => {
-  res.sendFile('index.html');
+  res.sendFile(path.join(__dirname, 'index.html'));
   // res.send('🚀 Hello from your Node.js app!');
 });
 
