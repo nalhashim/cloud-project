@@ -124,11 +124,12 @@
   </div>
 
   <script>
-    const BASE_URL =
-      window.location.hostname === 'localhost'
-        ? 'http://localhost:10000'
-        : 'https://cloud-project-hc8v.onrender.com';
 
+    const BASE_URL = 'http://localhost:3000';
+      // window.location.hostname === 'localhost'
+      //   ? 'http://localhost:5000'
+      //   : 'https://cloud-project-hc8v.onrender.com';
+    console.log("Base URL:", BASE_URL);
     function sortFilesByTitle(files) {
       return files.slice().sort((a, b) => a.title.localeCompare(b.title, 'ar'));
     }
