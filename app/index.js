@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path'); // ✅ Don't forget this!
 const app = express();
 
 // Choose the port from the environment or use 3000 for local dev
