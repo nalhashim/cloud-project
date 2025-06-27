@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8" />
   <title>DocuCloud</title>
@@ -89,10 +90,12 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="container py-5">
-    <h1><i class="bi bi-cloud-arrow-up-fill text-primary"></i> نظام إدارة وتحليل الملفات <i class="bi bi-cloud-arrow-up-fill text-primary"></i></h1>
+    <h1><i class="bi bi-cloud-arrow-up-fill text-primary"></i> نظام إدارة وتحليل الملفات <i
+        class="bi bi-cloud-arrow-up-fill text-primary"></i></h1>
 
     <!-- رفع الملفات -->
     <div class="mb-4">
@@ -121,6 +124,11 @@
   </div>
 
   <script>
+    const BASE_URL =
+      window.location.hostname === 'localhost'
+        ? 'http://localhost:5000'
+        : 'https://cloud-project-hc8v.onrender.com';
+
     function sortFilesByTitle(files) {
       return files.slice().sort((a, b) => a.title.localeCompare(b.title, 'ar'));
     }
@@ -143,7 +151,7 @@
 
         let rows = sortedFiles.map((file, i) => {
           const extClass = file.ext === 'pdf' ? 'ext-pdf' :
-                           file.ext === 'docx' ? 'ext-docx' : '';
+            file.ext === 'docx' ? 'ext-docx' : '';
 
           return `
             <tr>
@@ -183,12 +191,12 @@
           classificationCounts[f.classification] = (classificationCounts[f.classification] || 0) + 1;
         });
 
-      const mostCommon = Object.entries(classificationCounts)
-        .sort((a, b) => b[1] - a[1])[0];
+        const mostCommon = Object.entries(classificationCounts)
+          .sort((a, b) => b[1] - a[1])[0];
 
-      const statsText = `تم تحميل ${files.length} ملفًا، وأشهر تصنيف هو: ${mostCommon[0]}`;
+        const statsText = `تم تحميل ${files.length} ملفًا، وأشهر تصنيف هو: ${mostCommon[0]}`;
 
-      document.getElementById('fileTableContainer').innerHTML = tableHTML + `
+        document.getElementById('fileTableContainer').innerHTML = tableHTML + `
         <p style="font-size: 16px; font-weight: 600; margin-top: 10px; color: #444;"><i class="bi bi-bar-chart-line"></i>
 
 
@@ -215,7 +223,7 @@
       for (const file of files) formData.append("files", file);
 
       try {
-        const res = await fetch('https://cloud-project-hc8v.onrender.com/upload', {
+        const res = await fetch(`${BASE_URL}/upload`, {
           method: "POST",
           body: formData
         });
@@ -236,7 +244,7 @@
       if (!keyword) return alert("أدخل كلمة للبحث.");
 
       try {
-        const res = await fetch(`https://cloud-project-hc8v.onrender.com/search?keyword=${encodeURIComponent(keyword)}`);
+        const res = await fetch(`${BASE_URL}/search?keyword=${encodeURIComponent(keyword)}`);
         const results = await res.json();
 
         if (!results.length) {
@@ -272,4 +280,5 @@
     window.onload = fetchFilesAndDisplayTable;
   </script>
 </body>
+
 </html>
