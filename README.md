@@ -1,116 +1,83 @@
-cat << EOF > README.md
-# Cloud Project
+# Cloud Project Backend
 
-A collection of cloud-related projects and infrastructure code demonstrating best practices in cloud computing and DevOps.
-
----
-
-## Table of Contents
-- [About](#about)
-- [Projects](#projects)
-- [Installation & Setup](#installation--setup)
-- [Usage](#usage)
-- [Technologies](#technologies)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+This repository contains the backend code for the Cloud Project, focusing on a Node.js Express server with AWS SDK integration and file processing utilities.
 
 ---
 
-## About
+## Project Structure
 
-This repository contains a variety of cloud infrastructure and application projects. These aim to explore and demonstrate skills in:
-
-- Cloud provisioning (e.g., AWS, GCP, Azure)
-- Infrastructure-as-Code (Terraform, CloudFormation)
-- CI/CD pipelines
-- Containerization & orchestration (Docker, Kubernetes)
-- Serverless architectures
-
-Each project directory includes code samples, configurations, and usage instructions.
+- `server.js` — Main Express server entry point  
+- `check-connection.js` — Utility script to check service connectivity  
+- `.env` and `cloud.env` — Environment variables files (excluded from version control)  
+- `package.json` — Project metadata and dependencies  
+- `package-lock.json` — Exact versions of installed npm packages  
+- `classifier.json` — Possibly a JSON model or configuration used by the server
 
 ---
 
-## Projects
+## Features
 
-- **EC2 Provisioning** – Deploy EC2 instances using Terraform  
-- **Load Balancer & Auto Scaling** – Set up ELB and Auto Scaling Groups  
-- **S3 Static Website** – Host a static website on S3 with public access  
-- **IAM User Management** – Scripted IAM setup for secure access control
-
----
-
-## Installation & Setup
-
-### Prerequisites
-
-- Git
-- AWS CLI
-- Terraform
-
-### Clone the Repository
-
-\`\`\`bash
-git clone https://github.com/nalhashim/cloud-project.git
-cd cloud-project
-\`\`\`
+- REST API server built with Express.js  
+- AWS SDK integration for cloud interactions  
+- File upload and processing support (e.g., DOCX to HTML via Mammoth)  
+- CORS enabled for cross-origin requests  
+- Environment variable configuration using dotenv  
+- Basic structure for adding custom endpoints and middleware
 
 ---
 
-## Usage
+## Prerequisites
 
-To deploy an example Terraform project:
-
-\`\`\`bash
-cd ec2-provisioning
-terraform init
-terraform apply
-\`\`\`
-
-To destroy infrastructure:
-
-\`\`\`bash
-terraform destroy
-\`\`\`
-
-> Make sure to configure AWS CLI with \`aws configure\`.
+- Node.js (v14 or higher recommended)  
+- npm (Node package manager)  
 
 ---
 
-## Technologies
+## Installation
 
-- Terraform
-- AWS (EC2, S3, IAM, ELB, Auto Scaling)
-- Docker
-- GitHub
-- Shell scripting
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/nalhashim/cloud-project.git
+   cd cloud-project
 
----
+2. Install dependencies:
+npm install
 
-## Contributing
+3. Create an .env file with necessary environment variables (based on .env.example if available).
 
-1. Fork the repository  
-2. Create a branch: \`git checkout -b feature/my-feature\`  
-3. Commit your changes  
-4. Push: \`git push origin feature/my-feature\`  
-5. Open a Pull Request
+--
 
----
+Usage
+Start the server:
+npm start
+The server will run on the port defined in your .env file or default to 3000.
 
-## License
+--
 
-Licensed under the MIT License. See [LICENSE](LICENSE) for details.
+Dependencies
+Express — Fast, minimalist web framework for Node.js
 
----
+AWS SDK — AWS cloud service interactions
 
-## Contact
+Mammoth — DOCX to HTML converter
 
-**Nour Al‑Hashim**  
-[alhashimnourr@gmail.com](mailto:alhashimnourr@gmail.com)
+multer — Middleware for handling multipart/form-data for file uploads
 
----
+cors — Enable Cross-Origin Resource Sharing
 
-> *“Building with the cloud, one project at a time.”*
+dotenv — Load environment variables
 
-⭐ Star the repo if you find it useful!
-EOF
+--
+
+Contributing
+Feel free to fork, create branches, and submit pull requests for improvements or bug fixes.
+
+--
+
+License
+This project is licensed under the ISC License.
+
+--
+
+Contact
+For questions or support, contact Nour Al‑Hashim at alhashimnourr@gmail.com.
